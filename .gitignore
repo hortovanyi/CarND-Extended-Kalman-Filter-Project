@@ -6,3 +6,12 @@ build/
 
 # editor config
 .vscode/
+/Debug/
+
+.cproject
+
+.project
+
+*.xml
+
+.settings/org.eclipse.cdt.codan.core.prefs
