@@ -15,3 +15,5 @@ build/
 *.xml
 
 .settings/org.eclipse.cdt.codan.core.prefs
+
+*.json
