@@ -49,10 +49,6 @@ private:
   ///* state covariance matrix
   MatrixXd P_;
 
-  //acceleration noise components
-  float noise_ax;
-  float noise_ay;
-
   // tool object used to compute Jacobian and RMSE
   Tools tools;
   MatrixXd R_laser_;

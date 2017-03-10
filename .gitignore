@@ -18,5 +18,4 @@ build/
 
 *.json
 
-
-notebooks/.ipynb_checkpoints/ekf-visualisation-checkpoint.ipynb
+.ipynb_checkpoints

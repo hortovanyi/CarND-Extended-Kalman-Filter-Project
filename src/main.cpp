@@ -51,16 +51,18 @@ void check_files(ifstream& in_file, string& in_name,
 
 int main(int argc, char* argv[]) {
 
-//  check_arguments(argc, argv);
-//
-//  string in_file_name_ = argv[1];
+  check_arguments(argc, argv);
 
-  string proj_dir = "/Users/nick/Desktop/Udacity/CarND-Extended-Kalman-Filter-Project/";
-  string in_file_name_ = proj_dir + "data/sample-laser-radar-measurement-data-1.txt";
+  string in_file_name_ = argv[1];
+
+// bug with lldb and eclipse - cant pass arguments when in debug mode
+//  string proj_dir = "/Users/nick/Desktop/Udacity/CarND-Extended-Kalman-Filter-Project/";
+//  string in_file_name_ = proj_dir + "data/sample-laser-radar-measurement-data-2.txt";
+
   ifstream in_file_(in_file_name_.c_str(), ifstream::in);
 
-//  string out_file_name_ = argv[2];
-  string out_file_name_ = proj_dir + "output.txt";
+  string out_file_name_ = argv[2];
+//  string out_file_name_ = proj_dir + "output.txt";
 
   ofstream out_file_(out_file_name_.c_str(), ofstream::out);
 
