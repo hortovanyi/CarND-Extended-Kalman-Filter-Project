@@ -51,12 +51,17 @@ void check_files(ifstream& in_file, string& in_name,
 
 int main(int argc, char* argv[]) {
 
-  check_arguments(argc, argv);
+//  check_arguments(argc, argv);
+//
+//  string in_file_name_ = argv[1];
 
-  string in_file_name_ = argv[1];
+  string proj_dir = "/Users/nick/Desktop/Udacity/CarND-Extended-Kalman-Filter-Project/";
+  string in_file_name_ = proj_dir + "data/sample-laser-radar-measurement-data-1.txt";
   ifstream in_file_(in_file_name_.c_str(), ifstream::in);
 
-  string out_file_name_ = argv[2];
+//  string out_file_name_ = argv[2];
+  string out_file_name_ = proj_dir + "output.txt";
+
   ofstream out_file_(out_file_name_.c_str(), ofstream::out);
 
   check_files(in_file_, in_file_name_, out_file_, out_file_name_);
@@ -88,6 +93,12 @@ int main(int argc, char* argv[]) {
       float y;
       iss >> x;
       iss >> y;
+
+//      // ignore zero readings
+//      if (x == 0 && y == 0) {
+//    	  continue;
+//      }
+
       meas_package.raw_measurements_ << x, y;
       iss >> timestamp;
       meas_package.timestamp_ = timestamp;
@@ -104,6 +115,12 @@ int main(int argc, char* argv[]) {
       iss >> ro;
       iss >> theta;
       iss >> ro_dot;
+
+//      // ignore zero readings
+//      if (ro == 0 && theta == 0 && ro_dot == 0) {
+//    	  continue;
+//      }
+
       meas_package.raw_measurements_ << ro, theta, ro_dot;
       iss >> timestamp;
       meas_package.timestamp_ = timestamp;
@@ -136,8 +153,11 @@ int main(int argc, char* argv[]) {
   for (size_t k = 0; k < N; ++k) {
     // start filtering from the second frame (the speed is unknown in the first
     // frame)
-	cout << k << " measurement " << measurement_pack_list[k].raw_measurements_ << endl;
     fusionEKF.ProcessMeasurement(measurement_pack_list[k]);
+    // first time through is init
+    if (k==0) {
+    	continue;
+    }
 
     // output the estimation
     out_file_ << fusionEKF.ekf_.x_(0) << "\t";

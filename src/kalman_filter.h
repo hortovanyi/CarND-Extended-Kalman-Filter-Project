@@ -68,6 +68,11 @@ public:
   void UpdateEKF(const VectorXd &z);
 
 
+  /**
+   * Calculate non-linear h(x')
+   *
+   */
+  VectorXd h(const VectorXd &x);
 };
 
 #endif /* KALMAN_FILTER_H_ */

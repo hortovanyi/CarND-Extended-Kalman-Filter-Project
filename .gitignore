@@ -17,3 +17,6 @@ build/
 .settings/org.eclipse.cdt.codan.core.prefs
 
 *.json
+
+
+notebooks/.ipynb_checkpoints/ekf-visualisation-checkpoint.ipynb
