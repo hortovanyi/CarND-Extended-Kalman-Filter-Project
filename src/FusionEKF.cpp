@@ -63,10 +63,13 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			 */
 			float rho = measurement_pack.raw_measurements_[0]; // Range - radial distance from origin
 			float phi = measurement_pack.raw_measurements_[1]; // Bearing - angle between rho and x
+			float rho_dot = measurement_pack.raw_measurements_[2]; // Radial Velocity - change of p (range rate)
 			float x = rho * sin(phi);
 			float y = rho * cos(phi);
+			float vx = rho_dot * sin(phi);
+			float vy = rho_dot * cos(phi);
 
-			x_ << x, y, 0 , 0;
+			x_ << x, y, vx , vy;
 		} else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
 			/**
 			 Initialize state.
@@ -79,19 +82,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 //		R_radar_ << 0.01, 0, 0,
 //					0,0.01, 0,
 //					0, 0, 0.01;
-		R_radar_ << 0.010369618168272726, 0, 0,
-					0,1.0680397690973507e-06, 0,
-					0, 0, 0.011294795278015999;
-		R_laser_ << 0.00010514691201033777, 0,
-					0, 0.00010193598986578901;
+		R_radar_ << 0.014412589090776581, 0, 0,
+					0, 1.3610836622321855e-06, 0,
+					0, 0, 0.011073356944289297;
+		R_laser_ << 0.0068374897772981421, 0,
+					0, 0.0054887300686829819;
 
 		// intial state and covariance matrix
 		ekf_.x_ = x_;
 
-		P_ << 5, 0, 0, 0,
-			  0, 5, 0, 0,
-			  0, 0, 5, 0,
-			  0, 0, 0, 5;
+		P_ << 1, 0, 0, 0,
+			  0, 1, 0, 0,
+			  0, 0, 1, 0,
+			  0, 0, 0, 1;
 		ekf_.P_ = P_;
 
 		cout << "init x_ = " << ekf_.x_ << endl;
@@ -127,15 +130,20 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	ekf_.F_ = F_;
 
 	//set the acceleration noise components
-	double noise_ax = 16;
-	double noise_ay = 16;
+	double noise_ax = 4.5;
+	double noise_ay = 4.5;
 
 	// Update the process noise covariance matrix.
+	double dt_2 = dt * dt;
+	double dt_3 = dt_2 * dt;
+	double dt_4 = dt_3 * dt;
+	double c1 = dt_4 / 4;
+	double c2 = dt_3 / 2;
 	Q_ = MatrixXd(4, 4);
-	Q_ << (pow(dt, 4) / 4 * noise_ax), 0, (pow(dt, 3) / 2 * noise_ax), 0,
-		  0, (pow(dt, 4) / 4 * noise_ay), 0, (pow(dt, 3) / 2 * noise_ay),
-		  (pow(dt, 3) / 2 * noise_ax), 0, pow(dt, 2) * noise_ax, 0,
-		  0, (pow(dt, 3) / 2 * noise_ay), 0, pow(dt, 2) * noise_ay;
+	Q_ << c1 * noise_ax, 0, c2 * noise_ax, 0,
+		  0, c1 * noise_ay, 0, c2 * noise_ay,
+		  c2 * noise_ax, 0, dt_2 * noise_ax, 0,
+		  0, c2 * noise_ay, 0, dt_2 * noise_ay;
 
 	ekf_.Q_ = Q_;
 	ekf_.Predict();
