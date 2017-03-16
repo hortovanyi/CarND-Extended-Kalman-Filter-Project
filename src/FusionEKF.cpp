@@ -64,10 +64,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			float rho = measurement_pack.raw_measurements_[0]; // Range - radial distance from origin
 			float phi = measurement_pack.raw_measurements_[1]; // Bearing - angle between rho and x
 			float rho_dot = measurement_pack.raw_measurements_[2]; // Radial Velocity - change of p (range rate)
-			float x = rho * sin(phi);
-			float y = rho * cos(phi);
-			float vx = rho_dot * sin(phi);
-			float vy = rho_dot * cos(phi);
+			float x = rho * cos(phi);
+			float y = rho * sin(phi);
+			float vx = rho_dot * cos(phi);
+			float vy = rho_dot * sin(phi);
 
 			x_ << x, y, vx , vy;
 		} else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
